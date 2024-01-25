@@ -7,3 +7,10 @@ This is incompatible with anything that edits the BestiaryMenu, anything else sh
 There is no network or save tag, and it is safe to remove.
 
 Thanks to NCrafters for help with exporting.
+
+
+![Preview1](./images-for-readme/cat5.PNG)
+![Preview1](./images-for-readme/query.PNG)
+![Preview1](./images-for-readme/results.PNG)
+![Preview1](./images-for-readme/query2.PNG)
+![Preview1](./images-for-readme/results2.PNG)
