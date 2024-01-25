@@ -6,8 +6,8 @@
 script = ExtResource( 1 )
 id = "compatibility_search"
 name = "Monster Compatibility Search"
-version_code = 1
-version_string = "1.0"
+version_code = 3
+version_string = "1.2"
 author = "Limrix"
 save_file_format_tag = ""
 save_file_format_tag_version = 0

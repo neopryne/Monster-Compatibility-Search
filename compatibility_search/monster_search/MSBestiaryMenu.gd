@@ -308,7 +308,10 @@ func MONSTER_SEARCH__on_FilterPromptButton_pressed():
 	MenuHelper.add_child(MONSTER_SEARCH_menu)
 	var MONSTER_SEARCH_result = yield (MONSTER_SEARCH_menu.run_menu(), "completed")
 	if MONSTER_SEARCH_result != null:
-		MONSTER_SEARCH_move_filter = MONSTER_SEARCH_result.name
+		if MONSTER_SEARCH_result.has('name'):
+			MONSTER_SEARCH_move_filter = MONSTER_SEARCH_result.name
+		else:
+			MONSTER_SEARCH_move_filter = ""
 		MONSTER_SEARCH_generate_move_array()
 		reload()
 	MONSTER_SEARCH_menu.queue_free()
