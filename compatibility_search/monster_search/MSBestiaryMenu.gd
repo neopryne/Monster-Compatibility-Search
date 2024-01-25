@@ -107,7 +107,7 @@ func MONSTER_SEARCH_generate_move_array():
 	MONSTER_SEARCH_query_tag_array = Array()
 	for MONSTER_SEARCH_move_name in MONSTER_SEARCH_move_name_array:
 		var MONSTER_SEARCH_cleaned_move_name = MONSTER_SEARCH_move_name.strip_edges()
-		print(MONSTER_SEARCH_cleaned_move_name)
+		#print(MONSTER_SEARCH_cleaned_move_name)
 		#if it starts with a :, that's a :tag, not a move.
 		if (MONSTER_SEARCH_cleaned_move_name.substr(0, 1) == ":"):
 			MONSTER_SEARCH_query_tag_array.append(MONSTER_SEARCH_cleaned_move_name.substr(1))
@@ -116,10 +116,22 @@ func MONSTER_SEARCH_generate_move_array():
 			#I don't know how to get moves by name so brute force it
 			for MONSTER_SEARCH_move in BattleMoves.all_valid:
 				if (Strings.strip_diacritics(tr(MONSTER_SEARCH_move.name).to_lower()) == (MONSTER_SEARCH_cleaned_move_name)):
-					print(MONSTER_SEARCH_move.name)
+					#print(MONSTER_SEARCH_move.name)
 					MONSTER_SEARCH_move_array.append(MONSTER_SEARCH_move)
 					break
 
+func tag_is_compatible(MONSTER_SEARCH_monster_form:BaseForm, tag:String):
+	var MONSTER_SEARCH_tag_match = false
+	var types = MONSTER_SEARCH_monster_form.elemental_types
+	for etype in types:
+		if (etype.id == tag):
+			MONSTER_SEARCH_tag_match = true
+			break
+	for MONSTER_SEARCH_monster_tag in MONSTER_SEARCH_monster_form.move_tags:
+		if (MONSTER_SEARCH_monster_tag == tag):
+			MONSTER_SEARCH_tag_match = true
+			break
+	return MONSTER_SEARCH_tag_match
 
 #gotta figure out if this counts bootlegs or w/e.  Maybe in v2.
 func MONSTER_SEARCH_species_is_compatible(MONSTER_SEARCH_monster_form:BaseForm):
@@ -129,30 +141,28 @@ func MONSTER_SEARCH_species_is_compatible(MONSTER_SEARCH_monster_form:BaseForm):
 		var MONSTER_SEARCH_tag_array = MONSTER_SEARCH_move.tags
 		#each move tag set must match a tag on the monster
 		#the "any" tag is a special case, monsters don't have it, it's implicit.
+		#OR it must match the type of the monster.
 		var MONSTER_SEARCH_tag_array_match = false
 		for MONSTER_SEARCH_move_tag in MONSTER_SEARCH_tag_array:
 			if (MONSTER_SEARCH_move_tag == "any"):
 				MONSTER_SEARCH_tag_array_match = true
 				break
-			var MONSTER_SEARCH_tag_match = false
-			for MONSTER_SEARCH_monster_tag in MONSTER_SEARCH_monster_form.move_tags:
-				if (MONSTER_SEARCH_monster_tag == MONSTER_SEARCH_move_tag):
-					MONSTER_SEARCH_tag_match = true
+			var MONSTER_SEARCH_tag_match = tag_is_compatible(MONSTER_SEARCH_monster_form, MONSTER_SEARCH_move_tag)
 			if (MONSTER_SEARCH_tag_match):
 				MONSTER_SEARCH_tag_array_match = true
+				break
 		if (!MONSTER_SEARCH_tag_array_match):
 			MONSTER_SEARCH_is_compatible = false
+			break
 	#must match all listed tags
 	for MONSTER_SEARCH_query_tag in MONSTER_SEARCH_query_tag_array:
 		#I don't know why you'd search for this but ok...
 		if (MONSTER_SEARCH_query_tag == "any"):
 			continue
-		var MONSTER_SEARCH_tag_match = false
-		for MONSTER_SEARCH_monster_tag in MONSTER_SEARCH_monster_form.move_tags:
-			if (MONSTER_SEARCH_monster_tag == MONSTER_SEARCH_query_tag):
-				MONSTER_SEARCH_tag_match = true
+		var MONSTER_SEARCH_tag_match = tag_is_compatible(MONSTER_SEARCH_monster_form, MONSTER_SEARCH_query_tag)
 		if (!MONSTER_SEARCH_tag_match):
 			MONSTER_SEARCH_is_compatible = false
+			break
 	return MONSTER_SEARCH_is_compatible
 
 func load_monsters():
