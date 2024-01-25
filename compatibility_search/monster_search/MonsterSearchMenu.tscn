@@ -1,0 +1,191 @@
+[gd_scene load_steps=13 format=2]
+
+[ext_resource path="res://menus/BaseMenu.tscn" type="PackedScene" id=1]
+[ext_resource path="res://menus/menu_bg_fade.shader" type="Shader" id=2]
+[ext_resource path="res://nodes/menus/AutoFocusConnector.gd" type="Script" id=3]
+[ext_resource path="res://nodes/menus/InputMappedButton.gd" type="Script" id=4]
+[ext_resource path="res://menus/FullWidthButtonPanel.tscn" type="PackedScene" id=5]
+[ext_resource path="res://nodes/menus/RowFocusIndicator.tscn" type="PackedScene" id=6]
+[ext_resource path="res://menus/character_creation/GridRowLabel.gd" type="Script" id=7]
+[ext_resource path="res://mods/compatibility_search/monster_search/MonsterSearchMenu.gd" type="Script" id=8]
+
+[sub_resource type="ShaderMaterial" id=1]
+resource_local_to_scene = true
+shader = ExtResource( 2 )
+shader_param/progress = 1.0
+shader_param/max_alpha = 1.0
+shader_param/base_color = Color( 0.1686, 0.1098, 0.2235, 1 )
+shader_param/hi_color = Color( 0.6706, 0.4588, 0.9098, 0.0625 )
+
+[sub_resource type="StyleBoxFlat" id=3]
+content_margin_left = 16.0
+content_margin_right = 128.0
+bg_color = Color( 0.670588, 0.458824, 0.909804, 1 )
+corner_radius_top_right = 128
+corner_detail = 1
+shadow_color = Color( 0, 0, 0, 1 )
+shadow_size = 1
+shadow_offset = Vector2( -16, 16 )
+
+[sub_resource type="StyleBoxFlat" id=4]
+bg_color = Color( 1, 1, 1, 1 )
+shadow_color = Color( 0, 0, 0, 1 )
+shadow_size = 1
+shadow_offset = Vector2( -16, 16 )
+
+[sub_resource type="StyleBoxEmpty" id=2]
+
+[node name="MonsterSearchMenu" instance=ExtResource( 1 )]
+script = ExtResource( 8 )
+
+[node name="Blur" parent="." index="0"]
+material = SubResource( 1 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Scroller/OverscanMarginContainer" index="0"]
+margin_left = 693.0
+margin_top = 468.0
+margin_right = 1226.0
+margin_bottom = 612.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+custom_constants/separation = 0
+
+[node name="PanelContainer" type="PanelContainer" parent="Scroller/OverscanMarginContainer/VBoxContainer" index="0"]
+margin_right = 533.0
+margin_bottom = 60.0
+custom_styles/panel = SubResource( 3 )
+
+[node name="Label" type="Label" parent="Scroller/OverscanMarginContainer/VBoxContainer/PanelContainer" index="0"]
+margin_left = 16.0
+margin_right = 405.0
+margin_bottom = 60.0
+text = "Monster Compatibility Search"
+
+[node name="PanelContainer2" type="PanelContainer" parent="Scroller/OverscanMarginContainer/VBoxContainer" index="1"]
+margin_top = 60.0
+margin_right = 533.0
+margin_bottom = 144.0
+custom_styles/panel = SubResource( 4 )
+
+[node name="RowFocusIndicator" parent="Scroller/OverscanMarginContainer/VBoxContainer/PanelContainer2" index="0" instance=ExtResource( 6 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 533.0
+margin_bottom = 0.0
+
+[node name="MarginContainer" type="MarginContainer" parent="Scroller/OverscanMarginContainer/VBoxContainer/PanelContainer2" index="1"]
+margin_right = 533.0
+margin_bottom = 84.0
+rect_clip_content = true
+custom_constants/margin_right = 16
+custom_constants/margin_top = 8
+custom_constants/margin_left = 16
+custom_constants/margin_bottom = 16
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Scroller/OverscanMarginContainer/VBoxContainer/PanelContainer2/MarginContainer" index="0"]
+margin_left = 16.0
+margin_top = 8.0
+margin_right = 517.0
+margin_bottom = 68.0
+
+[node name="InputContainer" type="GridContainer" parent="Scroller/OverscanMarginContainer/VBoxContainer/PanelContainer2/MarginContainer/HBoxContainer" index="0"]
+margin_right = 400.0
+margin_bottom = 60.0
+grow_horizontal = 0
+custom_constants/vseparation = 16
+custom_constants/hseparation = 16
+columns = 2
+script = ExtResource( 3 )
+preserve_focus_index = true
+focus_on_hover = true
+
+[node name="Label" type="Label" parent="Scroller/OverscanMarginContainer/VBoxContainer/PanelContainer2/MarginContainer/HBoxContainer/InputContainer" index="0"]
+margin_right = 84.0
+margin_bottom = 60.0
+hint_tooltip = "UI_NEW_GAME_MODES_PERMADEATH_TAPES_HINT"
+mouse_filter = 1
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "Query"
+script = ExtResource( 7 )
+
+[node name="NameInput" type="LineEdit" parent="Scroller/OverscanMarginContainer/VBoxContainer/PanelContainer2/MarginContainer/HBoxContainer/InputContainer" index="1"]
+margin_left = 100.0
+margin_right = 400.0
+margin_bottom = 60.0
+rect_min_size = Vector2( 300, 0 )
+hint_tooltip = "Comma seperated list of required moves and :tags.
+(example: \":spirit, trick\")"
+context_menu_enabled = false
+virtual_keyboard_enabled = false
+
+[node name="FullWidthButtonPanel" parent="." index="3" instance=ExtResource( 5 )]
+
+[node name="ResetButton" type="Button" parent="FullWidthButtonPanel/HBoxContainer" index="0"]
+margin_right = 450.0
+margin_bottom = 52.0
+focus_mode = 0
+size_flags_vertical = 8
+custom_styles/hover = SubResource( 2 )
+custom_styles/pressed = SubResource( 2 )
+custom_styles/focus = SubResource( 2 )
+custom_styles/disabled = SubResource( 2 )
+custom_styles/normal = SubResource( 2 )
+text = "UI_SETTINGS_DEFAULTS_BUTTON"
+flat = true
+align = 0
+expand_icon = true
+script = ExtResource( 4 )
+action = "ui_action_1"
+hide_if_disabled = true
+
+[node name="Control" type="Control" parent="FullWidthButtonPanel/HBoxContainer" index="1"]
+margin_left = 514.0
+margin_right = 963.0
+margin_bottom = 52.0
+size_flags_horizontal = 3
+
+[node name="SaveButton" type="Button" parent="FullWidthButtonPanel/HBoxContainer" index="2"]
+margin_left = 1027.0
+margin_right = 1415.0
+margin_bottom = 52.0
+focus_mode = 0
+size_flags_vertical = 8
+custom_styles/hover = SubResource( 2 )
+custom_styles/pressed = SubResource( 2 )
+custom_styles/focus = SubResource( 2 )
+custom_styles/disabled = SubResource( 2 )
+custom_styles/normal = SubResource( 2 )
+text = "UI_BUTTON_SAVE_CHANGES"
+flat = true
+align = 0
+expand_icon = true
+script = ExtResource( 4 )
+action = "ui_save"
+hide_if_disabled = true
+
+[node name="CancelButton" type="Button" parent="FullWidthButtonPanel/HBoxContainer" index="3"]
+margin_left = 1479.0
+margin_right = 1752.0
+margin_bottom = 52.0
+focus_mode = 0
+size_flags_vertical = 8
+custom_styles/hover = SubResource( 2 )
+custom_styles/pressed = SubResource( 2 )
+custom_styles/focus = SubResource( 2 )
+custom_styles/disabled = SubResource( 2 )
+custom_styles/normal = SubResource( 2 )
+text = "UI_BUTTON_CANCEL"
+flat = true
+align = 0
+expand_icon = true
+script = ExtResource( 4 )
+action = "ui_cancel"
+hide_if_disabled = true
+
+[connection signal="focus_entered" from="Scroller/OverscanMarginContainer/VBoxContainer/PanelContainer2/MarginContainer/HBoxContainer/InputContainer/NameInput" to="." method="_on_NameInput_focus_entered"]
+[connection signal="focus_exited" from="Scroller/OverscanMarginContainer/VBoxContainer/PanelContainer2/MarginContainer/HBoxContainer/InputContainer/NameInput" to="." method="_on_NameInput_focus_exited"]
+[connection signal="pressed" from="FullWidthButtonPanel/HBoxContainer/ResetButton" to="." method="_on_ResetButton_pressed"]
+[connection signal="pressed" from="FullWidthButtonPanel/HBoxContainer/SaveButton" to="." method="_on_SaveButton_pressed"]
+[connection signal="pressed" from="FullWidthButtonPanel/HBoxContainer/CancelButton" to="." method="cancel"]
+
+[editable path="FullWidthButtonPanel"]

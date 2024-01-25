@@ -1,0 +1,416 @@
+[gd_scene load_steps=18 format=2]
+
+[ext_resource path="res://addons/misc_utils/OverscanMarginContainer.gd" type="Script" id=1]
+[ext_resource path="res://nodes/menus/AutoFocusConnector.gd" type="Script" id=2]
+[ext_resource path="res://menus/BaseMenu.tscn" type="PackedScene" id=3]
+[ext_resource path="res://menus/menu_bg_fade.shader" type="Shader" id=4]
+[ext_resource path="res://nodes/menus/AutoScrollContainer.gd" type="Script" id=5]
+[ext_resource path="res://menus/bestiary/BestiarySpeciesInfo.tscn" type="PackedScene" id=6]
+[ext_resource path="res://mods/compatibility_search/monster_search/MSBestiaryMenu.gd" type="Script" id=7]
+[ext_resource path="res://ui/fonts/regular/regular_36.tres" type="DynamicFont" id=8]
+[ext_resource path="res://nodes/menus/InputMappedButton.gd" type="Script" id=9]
+[ext_resource path="res://menus/BackButtonPanel.tscn" type="PackedScene" id=10]
+
+[sub_resource type="ShaderMaterial" id=1]
+resource_local_to_scene = true
+shader = ExtResource( 4 )
+shader_param/progress = 1.0
+shader_param/max_alpha = 1.0
+shader_param/base_color = Color( 0.1686, 0.1098, 0.2235, 1 )
+shader_param/hi_color = Color( 0.6706, 0.4588, 0.9098, 0.0625 )
+
+[sub_resource type="Animation" id=2]
+resource_name = "show_with_list"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/path = NodePath("Blur:material:shader_param/progress")
+tracks/0/interp = 1
+tracks/0/loop_wrap = false
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 0.0, 1.0 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Scroller:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = false
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.1, 0.3 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Scroller:margin_top")
+tracks/2/interp = 2
+tracks/2/loop_wrap = false
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.3 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 540, 0.0 ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("Scroller:margin_bottom")
+tracks/3/interp = 2
+tracks/3/loop_wrap = false
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.3 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 540, 0 ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("ListHScroller:margin_left")
+tracks/4/interp = 2
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0, 0.3 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ -540, 0.0 ]
+}
+tracks/5/type = "value"
+tracks/5/path = NodePath("ListHScroller:visible")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"times": PoolRealArray( 0, 0.3 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, true ]
+}
+tracks/6/type = "value"
+tracks/6/path = NodePath("CountHScroller:margin_right")
+tracks/6/interp = 2
+tracks/6/loop_wrap = false
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/keys = {
+"times": PoolRealArray( 0, 0.3 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 1000, 0.0 ]
+}
+
+[sub_resource type="Animation" id=3]
+resource_name = "show_without_list"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/path = NodePath("Blur:material:shader_param/progress")
+tracks/0/interp = 1
+tracks/0/loop_wrap = false
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 0.0, 1.0 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Scroller:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = false
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.1, 0.3 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Scroller:margin_top")
+tracks/2/interp = 2
+tracks/2/loop_wrap = false
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.3 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 540, 0.0 ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("Scroller:margin_bottom")
+tracks/3/interp = 2
+tracks/3/loop_wrap = false
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.3 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 540, 0 ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("ListHScroller:margin_left")
+tracks/4/interp = 2
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0, 0.3 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ -540, -540.0 ]
+}
+tracks/5/type = "value"
+tracks/5/path = NodePath("ListHScroller:visible")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"times": PoolRealArray( 0, 0.3 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ false, false ]
+}
+tracks/6/type = "value"
+tracks/6/path = NodePath("CountHScroller:margin_right")
+tracks/6/interp = 2
+tracks/6/loop_wrap = false
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/keys = {
+"times": PoolRealArray( 0, 0.3 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 1000, 0.0 ]
+}
+
+[sub_resource type="StyleBoxFlat" id=4]
+bg_color = Color( 1, 1, 1, 1 )
+expand_margin_top = 200.0
+expand_margin_bottom = 200.0
+shadow_color = Color( 0, 0, 0, 1 )
+shadow_size = 1
+shadow_offset = Vector2( -24, 0 )
+
+[sub_resource type="StyleBoxFlat" id=5]
+content_margin_left = 32.0
+content_margin_right = 32.0
+content_margin_top = 32.0
+content_margin_bottom = 32.0
+bg_color = Color( 1, 1, 1, 1 )
+corner_radius_bottom_left = 32
+corner_detail = 1
+expand_margin_right = 300.0
+expand_margin_top = 200.0
+shadow_color = Color( 0, 0, 0, 1 )
+shadow_size = 1
+shadow_offset = Vector2( -24, 24 )
+
+[sub_resource type="StyleBoxEmpty" id=6]
+
+[sub_resource type="StyleBoxEmpty" id=7]
+
+[node name="BestiaryMenu" instance=ExtResource( 3 )]
+script = ExtResource( 7 )
+show_list = true
+species = null
+sort_mode = 0
+list_mode = 0
+initial_info_page = 0
+
+[node name="Blur" parent="." index="0"]
+material = SubResource( 1 )
+
+[node name="AnimationPlayer" parent="." index="1"]
+anims/show_with_list = SubResource( 2 )
+anims/show_without_list = SubResource( 3 )
+
+[node name="BestiarySpeciesInfoMargin" type="MarginContainer" parent="Scroller/OverscanMarginContainer" index="0"]
+margin_left = 172.0
+margin_top = 97.0
+margin_right = 1748.0
+margin_bottom = 983.0
+
+[node name="BestiarySpeciesInfo" parent="Scroller/OverscanMarginContainer/BestiarySpeciesInfoMargin" index="0" instance=ExtResource( 6 )]
+margin_left = 453.0
+margin_top = 0.0
+margin_right = 1123.0
+margin_bottom = 886.0
+
+[node name="ListHScroller" type="Control" parent="." index="3"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="OverscanMarginContainer" type="MarginContainer" parent="ListHScroller" index="0"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+custom_constants/margin_right = 172
+custom_constants/margin_top = 97
+custom_constants/margin_left = 172
+custom_constants/margin_bottom = 97
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ButtonListContainer" type="PanelContainer" parent="ListHScroller/OverscanMarginContainer" index="0"]
+margin_left = 172.0
+margin_top = 97.0
+margin_right = 512.0
+margin_bottom = 983.0
+rect_min_size = Vector2( 340, 0 )
+size_flags_horizontal = 0
+custom_styles/panel = SubResource( 4 )
+
+[node name="ScrollContainer" type="ScrollContainer" parent="ListHScroller/OverscanMarginContainer/ButtonListContainer" index="0"]
+margin_right = 340.0
+margin_bottom = 886.0
+rect_clip_content = false
+scroll_horizontal_enabled = false
+script = ExtResource( 5 )
+
+[node name="ButtonList" type="VBoxContainer" parent="ListHScroller/OverscanMarginContainer/ButtonListContainer/ScrollContainer" index="0"]
+margin_right = 340.0
+size_flags_horizontal = 3
+script = ExtResource( 2 )
+assign_left_right = false
+preserve_focus_index = true
+
+[node name="CountHScroller" type="Control" parent="." index="4"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="OverscanMarginContainer" type="MarginContainer" parent="CountHScroller" index="0"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+custom_constants/margin_right = 0
+custom_constants/margin_top = 0
+custom_constants/margin_left = 0
+custom_constants/margin_bottom = 0
+script = ExtResource( 1 )
+window_safe_area = true
+
+[node name="PanelContainer" type="PanelContainer" parent="CountHScroller/OverscanMarginContainer" index="0"]
+margin_left = 1406.0
+margin_right = 1920.0
+margin_bottom = 234.0
+rect_min_size = Vector2( 340, 0 )
+size_flags_horizontal = 8
+size_flags_vertical = 0
+custom_styles/panel = SubResource( 5 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CountHScroller/OverscanMarginContainer/PanelContainer" index="0"]
+margin_left = 32.0
+margin_top = 32.0
+margin_right = 482.0
+margin_bottom = 202.0
+
+[node name="SeenLabel" type="Label" parent="CountHScroller/OverscanMarginContainer/PanelContainer/VBoxContainer" index="0"]
+margin_right = 450.0
+margin_bottom = 54.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 8 )
+text = "UI_BESTIARY_SEEN_COUNT"
+align = 2
+
+[node name="ObtainedLabel" type="Label" parent="CountHScroller/OverscanMarginContainer/PanelContainer/VBoxContainer" index="1"]
+margin_top = 58.0
+margin_right = 450.0
+margin_bottom = 112.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 8 )
+text = "UI_BESTIARY_RECORDED_COUNT"
+align = 2
+
+[node name="ObtainedPercentLabel" type="Label" parent="CountHScroller/OverscanMarginContainer/PanelContainer/VBoxContainer" index="2"]
+margin_top = 116.0
+margin_right = 450.0
+margin_bottom = 170.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 8 )
+text = "UI_BESTIARY_COMPLETION_PERCENT"
+align = 2
+
+[node name="BackButtonPanel" parent="." index="5" instance=ExtResource( 10 )]
+
+[node name="HBoxContainer" parent="BackButtonPanel" index="0"]
+margin_right = 1457.0
+
+[node name="SortPromptButton" type="Button" parent="BackButtonPanel/HBoxContainer" index="0"]
+margin_right = 378.0
+margin_bottom = 52.0
+focus_mode = 0
+custom_fonts/font = ExtResource( 8 )
+custom_styles/hover = SubResource( 6 )
+custom_styles/pressed = SubResource( 6 )
+custom_styles/focus = SubResource( 6 )
+custom_styles/disabled = SubResource( 6 )
+custom_styles/normal = SubResource( 6 )
+text = "UI_BESTIARY_SORT_BY_NAME"
+expand_icon = true
+script = ExtResource( 9 )
+action = "ui_action_1"
+hide_if_disabled = true
+
+[node name="MonsterSearchPromptButton" type="Button" parent="BackButtonPanel/HBoxContainer" index="1"]
+margin_left = 442.0
+margin_right = 623.0
+margin_bottom = 52.0
+custom_fonts/font = ExtResource( 8 )
+custom_styles/hover = SubResource( 7 )
+custom_styles/pressed = SubResource( 7 )
+custom_styles/focus = SubResource( 7 )
+custom_styles/disabled = SubResource( 7 )
+custom_styles/normal = SubResource( 7 )
+text = "Filter by Moves"
+expand_icon = true
+script = ExtResource( 9 )
+action = "ui_action_2"
+hide_if_disabled = true
+
+[node name="ListModePromptButton" type="Button" parent="BackButtonPanel/HBoxContainer" index="2"]
+margin_left = 687.0
+margin_right = 1065.0
+margin_bottom = 52.0
+focus_mode = 0
+custom_fonts/font = ExtResource( 8 )
+custom_styles/hover = SubResource( 7 )
+custom_styles/pressed = SubResource( 7 )
+custom_styles/focus = SubResource( 7 )
+custom_styles/disabled = SubResource( 7 )
+custom_styles/normal = SubResource( 7 )
+text = "UI_BESTIARY_SORT_BY_NAME"
+expand_icon = true
+script = ExtResource( 9 )
+action = "ui_page_up"
+hide_if_disabled = true
+
+[node name="BackButton" parent="BackButtonPanel/HBoxContainer" index="3"]
+margin_left = 1129.0
+margin_right = 1373.0
+
+[connection signal="habitat_map_requested" from="Scroller/OverscanMarginContainer/BestiarySpeciesInfoMargin/BestiarySpeciesInfo" to="." method="_on_habitat_map_requested"]
+[connection signal="resized" from="ListHScroller/OverscanMarginContainer/ButtonListContainer" to="." method="_on_ButtonListContainer_resized"]
+[connection signal="pressed" from="BackButtonPanel/HBoxContainer/SortPromptButton" to="." method="_on_SortPromptButton_pressed"]
+[connection signal="pressed" from="BackButtonPanel/HBoxContainer/MonsterSearchPromptButton" to="." method="MONSTER_SEARCH__on_FilterPromptButton_pressed"]
+[connection signal="pressed" from="BackButtonPanel/HBoxContainer/ListModePromptButton" to="." method="_on_ListModePromptButton_pressed"]
+
+[editable path="BackButtonPanel"]
