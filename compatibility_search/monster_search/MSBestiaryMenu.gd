@@ -3,6 +3,9 @@ extends "res://menus/BaseMenu.gd"
 const BestiaryListButton = preload("res://menus/bestiary/BestiaryListButton.tscn")
 const BestiaryListButtonFusion = preload("res://menus/bestiary/BestiaryListButtonFusion.tscn")
 
+const FONIC_TAGS = ["poison", "earth", "air", "water", "fire", "artificial_electricity", "sound", "anathema"]
+const FONIC_TYPES = ["poison", "earth", "air", "water", "fire", "lightning"]
+
 enum SortMode{SORT_BY_NUMBER, SORT_BY_NAME}
 enum ListMode{LIST_MONSTERS, LIST_FUSIONS}
 
@@ -30,6 +33,7 @@ var current_button:BaseButton = null
 var MONSTER_SEARCH_move_filter = ""
 var MONSTER_SEARCH_move_array = Array()
 var MONSTER_SEARCH_query_tag_array = Array()
+var MONSTER_SEARCH_fonic_monster_name = null
 
 func _ready():
 	reload()
@@ -99,18 +103,37 @@ func can_toggle_list_mode()->bool:
 		return false
 	return list_mode == ListMode.LIST_FUSIONS or SaveState.species_collection.seen_fusions_by_name.size() > 0
 
+func getFonicId(monsterForm:BaseForm):
+	if not monsterForm:
+		print()
+	var fonicId = 0
+	#get all tags matching these, and all types matching the given types.
+	#From their positions, construct a binary number unique to those types.
+	for i in FONIC_TAGS.size():
+		for monster_tag in monsterForm.move_tags:
+			if (monster_tag == FONIC_TAGS[i]):
+				fonicId += pow(2, i)
+	
+	for i in FONIC_TYPES.size():
+		for elementalType in monsterForm.elemental_types:
+			if (elementalType.id == FONIC_TYPES[i]):
+				fonicId += pow(2, i)
+	return fonicId
 
 func MONSTER_SEARCH_generate_move_array():
 	var MONSTER_SEARCH_move_name_array = MONSTER_SEARCH_move_filter.split(",", false, 0)
 	#clear old values
 	MONSTER_SEARCH_move_array = Array()
 	MONSTER_SEARCH_query_tag_array = Array()
+	MONSTER_SEARCH_fonic_monster_name = null
 	for MONSTER_SEARCH_move_name in MONSTER_SEARCH_move_name_array:
 		var MONSTER_SEARCH_cleaned_move_name = MONSTER_SEARCH_move_name.strip_edges()
 		#print(MONSTER_SEARCH_cleaned_move_name)
 		#if it starts with a :, that's a :tag, not a move.
 		if (MONSTER_SEARCH_cleaned_move_name.substr(0, 1) == ":"):
 			MONSTER_SEARCH_query_tag_array.append(MONSTER_SEARCH_cleaned_move_name.substr(1))
+		elif (MONSTER_SEARCH_cleaned_move_name.substr(0, 1) == "@"):
+			MONSTER_SEARCH_fonic_monster_name = MONSTER_SEARCH_cleaned_move_name.substr(1)
 		else:
 			#find matching move data
 			#I don't know how to get moves by name so brute force it
@@ -123,7 +146,7 @@ func MONSTER_SEARCH_generate_move_array():
 func tag_is_compatible(MONSTER_SEARCH_monster_form:BaseForm, tag:String):
 	var MONSTER_SEARCH_tag_match = false
 	var types = MONSTER_SEARCH_monster_form.elemental_types
-	for etype in types:
+	for etype in types:#todo check artificial_electricity works as indended?
 		if (etype.id == tag):
 			MONSTER_SEARCH_tag_match = true
 			break
@@ -163,6 +186,21 @@ func MONSTER_SEARCH_species_is_compatible(MONSTER_SEARCH_monster_form:BaseForm):
 		if (!MONSTER_SEARCH_tag_match):
 			MONSTER_SEARCH_is_compatible = false
 			break
+	#must have same fonic id as listed monster
+	if MONSTER_SEARCH_fonic_monster_name:
+		var fonicMonsterForm
+		MONSTER_SEARCH_fonic_monster_name = MONSTER_SEARCH_fonic_monster_name.capitalize()
+		for species in MonsterForms.by_name:
+			var speciesName = species.name.substr(0, max(0, species.name.length() - 5)).capitalize()
+			#print("Comparing ", speciesName, " and ", MONSTER_SEARCH_fonic_monster_name)
+			if MONSTER_SEARCH_fonic_monster_name == speciesName:
+				fonicMonsterForm = species
+				break
+		if not fonicMonsterForm:
+			print("Error: Failed to find match for monster ", MONSTER_SEARCH_fonic_monster_name)
+			return MONSTER_SEARCH_is_compatible
+		if (getFonicId(fonicMonsterForm) == 0) or getFonicId(MONSTER_SEARCH_monster_form) != getFonicId(fonicMonsterForm):
+			MONSTER_SEARCH_is_compatible = false
 	return MONSTER_SEARCH_is_compatible
 
 func load_monsters():
