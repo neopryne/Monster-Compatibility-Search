@@ -2,6 +2,7 @@ extends "res://menus/BaseMenu.gd"
 
 const BestiaryListButton = preload("res://menus/bestiary/BestiaryListButton.tscn")
 const BestiaryListButtonFusion = preload("res://menus/bestiary/BestiaryListButtonFusion.tscn")
+var ElementalTypes = Datatables.load("res://data/elemental_types/")
 
 const FONIC_TAGS = ["poison", "earth", "air", "water", "fire", "artificial_electricity", "sound", "anathema"]
 const FONIC_TYPES = ["poison", "earth", "air", "water", "fire", "lightning"]
@@ -156,7 +157,26 @@ func tag_is_compatible(MONSTER_SEARCH_monster_form:BaseForm, tag:String):
 			break
 	return MONSTER_SEARCH_tag_match
 
-#gotta figure out if this counts bootlegs or w/e.  Maybe in v2.
+#Might actually be a MonsterForm
+#If I were really good, I would load the bootleg color swaps pallete
+#Iterates through all versions of a species and adds the compatible ones.
+func MONSTER_SEARCH_addAllSpeciesTypes(species:BaseForm):
+	var speciesResourcePath = species.resource_path
+	if (MONSTER_SEARCH_species_is_compatible(species)):
+		#print("wsschrag species res path is ", speciesResourcePath)
+		_add_list_button(species)
+	#strip out species type tags
+	#See if there are UI changes I need to make to species, or if I need to deep copy stuff
+	#so it works properly.  This error might indicate I need to deep copy. I do.
+	for bootlegType in ElementalTypes.table.values():
+		var bootlegSpecies = species.create_type_variant([bootlegType])
+		#print("wsschrag bootlegSpecies is ", bootlegSpecies) #is a resource here.
+		#print("wsschrag bootlegSpecies is a ", bootlegSpecies.get_class()) #is a resource here.
+		#print("wsschrag bootlegSpecies res path is ", bootlegSpecies.MONSTER_SEARCH_resource_path) #is a resource here.
+		if (MONSTER_SEARCH_species_is_compatible(bootlegSpecies)):
+			_add_list_button(bootlegSpecies)
+	return
+
 func MONSTER_SEARCH_species_is_compatible(MONSTER_SEARCH_monster_form:BaseForm):
 	var MONSTER_SEARCH_is_compatible = true
 	#must have all listed moves
@@ -208,17 +228,16 @@ func load_monsters():
 		for species in MonsterForms.by_name:
 			assert (species != null)
 			if SaveState.species_collection.has_seen_species(species):
-				if (MONSTER_SEARCH_species_is_compatible(species)):
-					_add_list_button(species)
+				MONSTER_SEARCH_addAllSpeciesTypes(species)
 	else :
 		assert (sort_mode == SortMode.SORT_BY_NUMBER)
 		for species in MonsterForms.by_index:
 			var index = species.bestiary_index
 			if (species.bestiary_category == MonsterForm.BestiaryCategory.MONSTER and is_regular_index(index)) or SaveState.species_collection.has_seen_species(species):
-				if (MONSTER_SEARCH_species_is_compatible(species)):
-					_add_list_button(species)
+				MONSTER_SEARCH_addAllSpeciesTypes(species)
 	
 	obtained_max = MonsterForms.official_count
+	print("Finished loading all monsters wss")
 	
 	obtained_label.text = Loc.trf("UI_BESTIARY_RECORDED_COUNT", {
 		"num":obtained_count, 
